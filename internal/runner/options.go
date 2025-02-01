@@ -2,7 +2,6 @@ package runner
 
 import (
 	"errors"
-	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -73,6 +72,7 @@ type Options struct {
 	HealthCheck        bool
 	DisableUpdateCheck bool
 	PdcpAuth           string
+	Proxy              string
 }
 
 // ShouldLoadResume resume file
@@ -171,7 +171,7 @@ func ParseOptions() *Options {
 		flagSet.IntVar(&options.Retries, "retry", 2, "number of dns attempts to make (must be at least 1)"),
 		flagSet.BoolVarP(&options.HostsFile, "hostsfile", "hf", false, "use system host file"),
 		flagSet.BoolVar(&options.Trace, "trace", false, "perform dns tracing"),
-		flagSet.IntVar(&options.TraceMaxRecursion, "trace-max-recursion", math.MaxInt16, "Max recursion for dns trace"),
+		flagSet.IntVar(&options.TraceMaxRecursion, "trace-max-recursion", 255, "Max recursion for dns trace"),
 		flagSet.BoolVar(&options.Resume, "resume", false, "resume existing scan"),
 		flagSet.BoolVar(&options.Stream, "stream", false, "stream mode (wordlist, wildcard, stats and stop/resume will be disabled)"),
 	)
@@ -181,6 +181,7 @@ func ParseOptions() *Options {
 		flagSet.StringVarP(&options.Resolvers, "resolver", "r", "", "list of resolvers to use (file or comma separated)"),
 		flagSet.IntVarP(&options.WildcardThreshold, "wildcard-threshold", "wt", 5, "wildcard filter threshold"),
 		flagSet.StringVarP(&options.WildcardDomain, "wildcard-domain", "wd", "", "domain name for wildcard filtering (other flags will be ignored - only json output is supported)"),
+		flagSet.StringVar(&options.Proxy, "proxy", "", "proxy to use (eg socks5://127.0.0.1:8080)"),
 	)
 
 	_ = flagSet.Parse()
